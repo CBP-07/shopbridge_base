@@ -54,6 +54,14 @@ namespace Shopbridge_base.Controllers
                     validation: ModelState.Values.SelectMany(y => y.Errors.Select(x => $"{x.ErrorMessage}"))
                     ));
             }
+
+            if(id == 0)
+            {
+                return BadRequest(Factory.GetResponse<ServerErrorResponse>(null, 400, "Invalid request", false,
+                    validation: new[] { "id can't be 0" })
+                    );
+            }
+
             var found = await productService.Exist(x => x.Product_Id == id);
             if(!found)
             {
