@@ -29,14 +29,14 @@ namespace Shopbridge_base.Controllers
         [HttpGet]   
         public async Task<ActionResult<IEnumerable<Product>>> GetProduct()
         {
-            return Ok(Factory.GetResponse<Response>(productService.Get(x=>x.Status==true)));
+            return Ok(Factory.GetResponse<Response>(await productService.Get(x=>x.Status==true)));
         }
 
         
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
-            var product = productService.FirstOrDefault(x => x.Product_Id == id);
+            var product = await productService.FirstOrDefault(x => x.Product_Id == id);
 
             if (product == null)
                 return NotFound();
@@ -54,7 +54,7 @@ namespace Shopbridge_base.Controllers
                     validation: ModelState.Values.SelectMany(y => y.Errors.Select(x => $"{x.ErrorMessage}"))
                     ));
             }
-            var found = productService.Exist(x => x.Product_Id == id);
+            var found = await productService.Exist(x => x.Product_Id == id);
             if(!found)
             {
                 return NotFound(Factory.GetResponse<ServerErrorResponse>(null, 404, "Invalid request", false,
@@ -62,7 +62,7 @@ namespace Shopbridge_base.Controllers
                     ));
             }
 
-            var res =productService.Update(id,product);
+            var res = await productService.Update(id,product);
             return Ok(Factory.GetResponse<Response>(res));
         }
 
@@ -76,7 +76,7 @@ namespace Shopbridge_base.Controllers
                     validation: ModelState.Values.SelectMany(y=>y.Errors.Select(x=>$"{x.ErrorMessage}"))
                     ));
             }
-            var res = productService.Add(product);
+            var res = await productService.Add(product);
             return Ok(Factory.GetResponse<Response>(res));
         }
 
@@ -84,14 +84,14 @@ namespace Shopbridge_base.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
-            var del =productService.Delete(x => x.Product_Id == id && x.Status==true);
+            var del = await productService.Delete(x => x.Product_Id == id && x.Status==true);
             return Ok(Factory.GetResponse<Response>(del));
         }
 
         [HttpGet("Exist/{id}")]
         private async Task<IActionResult> ProductExists([FromRoute]int id)
         {
-            return Ok(Factory.GetResponse<Response>(productService.Exist(x=>x.Product_Id==id)));
+            return Ok(Factory.GetResponse<Response>(await productService.Exist(x=>x.Product_Id==id && x.Status)));
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Shopbridge_base.Data.Repository;
 using Shopbridge_base.Domain.Models;
 using Shopbridge_base.Domain.Services.Interfaces;
@@ -20,37 +21,37 @@ namespace Shopbridge_base.Domain.Services
             _logger = logger;
         }
 
-        public IEnumerable<Product> Get(params Expression<Func<Product, object>>[] navigationProperties)
+        public async Task<IEnumerable<Product>> Get(params Expression<Func<Product, object>>[] navigationProperties)
         {
-            return _repository.Get<Product>(navigationProperties);
+            return await _repository.Get<Product>(navigationProperties).ToListAsync();
         }
 
-        public Product FirstOrDefault(Expression<Func<Product, bool>> selector)
+        public async Task<Product> FirstOrDefault(Expression<Func<Product, bool>> selector)
         {
-            return _repository.FirstOrDefault(selector);
+            return await _repository.FirstOrDefault(selector);
         }
 
-        public IEnumerable<Product> Get(Expression<Func<Product, bool>> selector)
+        public async Task<IEnumerable<Product>> Get(Expression<Func<Product, bool>> selector)
         {
-            return _repository.Get(selector).ToList();
+            return await _repository.Get(selector).ToListAsync();
         }
 
-        public bool Exist(Expression<Func<Product ,bool>> selector)
+        public async Task<bool> Exist(Expression<Func<Product ,bool>> selector)
         {
-            return _repository.Exist(selector);
+            return await _repository.Exist(selector);
         }
-        public Product Add(Product product)
+        public async Task<Product> Add(Product product)
         {
-            return _repository.Add(product);
+            return await _repository.Add(product);
         }
-        public Product Update(int id,Product product)
+        public async Task<Product> Update(int id,Product product)
         {
-            return _repository.Update(id,product);
+            return await _repository.Update(id,product);
         }
 
-        public bool Delete(Expression<Func<Product, bool>> selector)
+        public async Task<bool> Delete(Expression<Func<Product, bool>> selector)
         {
-            return _repository.Delete(selector);
+            return await _repository.Delete(selector);
         }
     }
 }

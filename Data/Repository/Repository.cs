@@ -18,7 +18,7 @@ namespace Shopbridge_base.Data.Repository
             this._ctx = _dbcontext;
         }
 
-        public T Add<T>(T entity) where T : class, IEntity
+        public async Task<T> Add<T>(T entity) where T : class, IEntity
         {
             try
             {
@@ -38,15 +38,15 @@ namespace Shopbridge_base.Data.Repository
             return _ctx.Set<T>().AsQueryable();
         }
 
-        public bool Delete<T>(Expression<Func<T, bool>> selector) where T : class, IEntity
+        public async Task<bool> Delete<T>(Expression<Func<T, bool>> selector) where T : class, IEntity
         {
             try
             {
-                var item = FirstOrDefault(selector);
+                var item = await FirstOrDefault(selector);
                 (item as IEntity).Status = false;
                 //_ctx.Remove(item);
                 _ctx.SaveChanges();
-                return !Exist(selector);
+                return !await Exist(selector);
             }
             catch (Exception ex)
             {
@@ -55,19 +55,19 @@ namespace Shopbridge_base.Data.Repository
             }
         }
 
-        public bool Exist<T>(Expression<Func<T, bool>> selector) where T : class, IEntity
+        public async Task<bool> Exist<T>(Expression<Func<T, bool>> selector) where T : class, IEntity
         {
-            return _ctx.Set<T>().Any(selector);
+            return await _ctx.Set<T>().AnyAsync(selector);
         }
 
-        public T FirstOrDefault<T>(Expression<Func<T, bool>> selector) where T : class, IEntity
+        public async Task<T> FirstOrDefault<T>(Expression<Func<T, bool>> selector) where T : class, IEntity
         {
-            return AsQueryable<T>().FirstOrDefault(selector);
+            return  await AsQueryable <T>().FirstOrDefaultAsync(selector);
         }
 
         public IQueryable<T> Get<T>(params Expression<Func<T, object>>[] navigationProperties) where T : class, IEntity
         {
-            var query = AsQueryable<T>();
+            var query =  AsQueryable<T>();
             query = query.IncludeProperties(navigationProperties);
             return query;
         }
@@ -80,12 +80,12 @@ namespace Shopbridge_base.Data.Repository
             return query;
         }
 
-        public IEnumerable<T> Get<T>() where T : class, IEntity
+        public async Task<IEnumerable<T>> Get<T>() where T : class, IEntity
         {
             return AsQueryable<T>().ToList();
         }
 
-        public T Update<T, TId>(TId id, T entity) where T : class, IEntity
+        public async Task<T> Update<T, TId>(TId id, T entity) where T : class, IEntity
         {
             try
             {
