@@ -29,7 +29,7 @@ namespace Shopbridge_base.Controllers
         [HttpGet]   
         public async Task<ActionResult<IEnumerable<Product>>> GetProduct()
         {
-            return Ok(Factory.GetResponse<Response>(productService.Get()));
+            return Ok(Factory.GetResponse<Response>(productService.Get(x=>x.Status==true)));
         }
 
         
@@ -62,7 +62,7 @@ namespace Shopbridge_base.Controllers
                     ));
             }
 
-            var res =productService.Update(product);
+            var res =productService.Update(id,product);
             return Ok(Factory.GetResponse<Response>(res));
         }
 
@@ -84,7 +84,7 @@ namespace Shopbridge_base.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
-            var del =productService.Delete(x => x.Product_Id == id);
+            var del =productService.Delete(x => x.Product_Id == id && x.Status==true);
             return Ok(Factory.GetResponse<Response>(del));
         }
 

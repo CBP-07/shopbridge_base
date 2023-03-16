@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Shopbridge_base.Domain.Models;
 using Shopbridge_base.Helpers;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace Shopbridge_base.Data.Repository
             this._ctx = _dbcontext;
         }
 
-        public T Add<T>(T entity) where T : class
+        public T Add<T>(T entity) where T : class, IEntity
         {
             try
             {
@@ -32,17 +33,18 @@ namespace Shopbridge_base.Data.Repository
             }
         }
 
-        public IQueryable<T> AsQueryable<T>() where T : class
+        public IQueryable<T> AsQueryable<T>() where T : class, IEntity
         {
             return _ctx.Set<T>().AsQueryable();
         }
 
-        public bool Delete<T>(Expression<Func<T, bool>> selector) where T : class
+        public bool Delete<T>(Expression<Func<T, bool>> selector) where T : class, IEntity
         {
             try
             {
                 var item = FirstOrDefault(selector);
-                _ctx.Remove(item);
+                (item as IEntity).Status = false;
+                //_ctx.Remove(item);
                 _ctx.SaveChanges();
                 return !Exist(selector);
             }
@@ -53,24 +55,24 @@ namespace Shopbridge_base.Data.Repository
             }
         }
 
-        public bool Exist<T>(Expression<Func<T, bool>> selector) where T : class
+        public bool Exist<T>(Expression<Func<T, bool>> selector) where T : class, IEntity
         {
             return _ctx.Set<T>().Any(selector);
         }
 
-        public T FirstOrDefault<T>(Expression<Func<T, bool>> selector) where T : class
+        public T FirstOrDefault<T>(Expression<Func<T, bool>> selector) where T : class, IEntity
         {
             return AsQueryable<T>().FirstOrDefault(selector);
         }
 
-        public IQueryable<T> Get<T>(params Expression<Func<T, object>>[] navigationProperties) where T : class
+        public IQueryable<T> Get<T>(params Expression<Func<T, object>>[] navigationProperties) where T : class, IEntity
         {
             var query = AsQueryable<T>();
             query = query.IncludeProperties(navigationProperties);
             return query;
         }
        
-        public IQueryable<T> Get<T>(Expression<Func<T, bool>> where, params Expression<Func<T, object>>[] navigationProperties) where T : class
+        public IQueryable<T> Get<T>(Expression<Func<T, bool>> where, params Expression<Func<T, object>>[] navigationProperties) where T : class, IEntity
         {
             var query = AsQueryable<T>();
             query = query.IncludeProperties(navigationProperties);
@@ -78,12 +80,12 @@ namespace Shopbridge_base.Data.Repository
             return query;
         }
 
-        public IEnumerable<T> Get<T>() where T : class
+        public IEnumerable<T> Get<T>() where T : class, IEntity
         {
             return AsQueryable<T>().ToList();
         }
 
-        public T Update<T, TId>(TId id, T entity) where T : class
+        public T Update<T, TId>(TId id, T entity) where T : class, IEntity
         {
             try
             {
