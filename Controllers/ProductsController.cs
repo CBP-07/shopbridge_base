@@ -26,10 +26,11 @@ namespace Shopbridge_base.Controllers
         }
 
        
-        [HttpGet]   
-        public async Task<ActionResult<IEnumerable<Product>>> GetProduct()
+        [HttpGet("Exist/{existing}/BeginIndex/{begin}/offset/{offset}")]   
+        public async Task<ActionResult<IEnumerable<Product>>> GetProduct([FromRoute]bool existing,
+            [FromRoute]int begin,[FromRoute]int offset)
         {
-            return Ok(Factory.GetResponse<Response>(await productService.Get(x=>x.Status==true)));
+            return Ok(Factory.GetResponse<Response>(await productService.Get(x=>x.Status  == existing)));
         }
 
         

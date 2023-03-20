@@ -33,6 +33,7 @@ namespace Shopbridge_base.Middleware
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 if(ex is ServerResponseException e)
                 {
+                    context.Response.StatusCode = e.StatusCode;
                     await context.Response.Body.WriteAsync((e.GetResponseError).GetBytes());
                     
                 }

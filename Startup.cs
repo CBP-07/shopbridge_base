@@ -46,8 +46,13 @@ namespace Shopbridge_base
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Shopbridge_base", Version = "v1" });
             });
-
-
+            
+            //using(var scope = services.BuildServiceProvider().CreateScope())
+            //using (var context = scope.ServiceProvider.GetRequiredService<Shopbridge_Context>())
+            //{
+            //    context.Database.EnsureCreated();
+            //    context.Database.Migrate();
+            //}
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -59,7 +64,7 @@ namespace Shopbridge_base
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Shopbridge_base v1"));
             }
-
+            
             app.UseHttpsRedirection();
 
             app.UseRouting();

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Shopbridge_base.Data;
 using Shopbridge_base.Data.Repository;
 using Shopbridge_base.Domain.Models;
 using Shopbridge_base.Domain.Services.Interfaces;
@@ -33,7 +34,20 @@ namespace Shopbridge_base.Domain.Services
 
         public async Task<IEnumerable<Product>> Get(Expression<Func<Product, bool>> selector)
         {
+
             return await _repository.Get(selector).ToListAsync();
+        }
+
+        public async Task<ProductPagedList> Get(Expression<Func<Product, bool>> selector, int begin, int offset)
+        {
+            int items = begin * offset;
+            var products =await _repository.Get(selector).Skip(items).Take(offset).ToListAsync();
+            var remaining = await _repository.Count((Product x)=>x.Status==true) - items;
+            return new ProductPagedList {
+                Page = begin,
+                Product = products,
+                Remainig = remaining
+            };
         }
 
         public async Task<bool> Exist(Expression<Func<Product ,bool>> selector)

@@ -13,6 +13,7 @@ namespace Shopbridge_base.Data.Repository
         IQueryable<T> Get<T>(params Expression<Func<T, object>>[] navigationProperties) where T : class, IEntity;
         IQueryable<T> Get<T>(Expression<Func<T, bool>> where, params Expression<Func<T, object>>[] navigationProperties) where T : class, IEntity;
          Task<IEnumerable<T>> Get<T>() where T : class, IEntity;
+         Task<int> Count<T>(Expression<Func<T, bool>> expression) where T : class, IEntity;
          Task<T> FirstOrDefault<T>(Expression<Func<T,bool>> selector) where T : class, IEntity;
          Task<bool> Delete<T>(Expression<Func<T,bool>> selector) where T: class, IEntity;
          Task<T> Add<T>(T entity) where T: class, IEntity;

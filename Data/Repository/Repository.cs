@@ -71,7 +71,14 @@ namespace Shopbridge_base.Data.Repository
             query = query.IncludeProperties(navigationProperties);
             return query;
         }
-       
+
+        public async Task<int> Count<T>(Expression<Func<T,bool>> expression) where T : class, IEntity
+        {
+            var query = AsQueryable<T>();
+            var result =query.Count(expression);
+            return result;
+        }
+
         public IQueryable<T> Get<T>(Expression<Func<T, bool>> where, params Expression<Func<T, object>>[] navigationProperties) where T : class, IEntity
         {
             var query = AsQueryable<T>();

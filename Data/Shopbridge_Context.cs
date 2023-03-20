@@ -15,5 +15,15 @@ namespace Shopbridge_base.Data
         }
 
         public DbSet<Product> Product { get; set; }
+        public DbSet<Category> Categories{ get; set; }
+        public DbSet<ProductCategories> ProductCategories { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+
+            modelBuilder.Entity<ProductCategories>().HasKey(x => x.ProductCategoriesId);
+            modelBuilder.Entity<ProductCategories>().HasOne(x => x.Category).WithMany(x => x.ProductCategories);
+            modelBuilder.Entity<ProductCategories>().HasOne(x => x.Category).WithMany(x => x.ProductCategories);
+        }
     }
 }
